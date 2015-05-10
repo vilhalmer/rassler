@@ -1,0 +1,29 @@
+{
+  "name": "rassler",
+  "version": "1.0.0",
+  "description": "A node.js server to generate RSS feeds from the Youtube v3 API",
+  "main": "rassler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "rss": "latest",
+    "moment": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vilhalmer/rassler.git"
+  },
+  "keywords": [
+    "youtube",
+    "video",
+    "api",
+    "v3"
+  ],
+  "author": "vilhalmer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vilhalmer/rassler/issues"
+  },
+  "homepage": "https://github.com/vilhalmer/rassler"
+}
