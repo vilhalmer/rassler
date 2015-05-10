@@ -1,0 +1,32 @@
+--------------
+| rassler.js |
+--------------
+
+Hello there! rassler.js is a simple node server to generate RSS feeds from the
+Youtube v3 API, now that v2 is completely gone. Toss this on a server somewhere
+and request /feed/[username] to get the appropriate RSS feed.
+
+You will need:
+- A Google API key, which you can get at https://console.developers.google.com/.
+  Don't forget to enable the Youtube v3 API for the project as well.
+- Somewhere to host it
+- Node 0.12.2 (Might work on some slightly older ones, doesn't work on 0.10.)
+- The node modules 'rss' and 'moment' (npm install rss moment)
+
+Place your API key into the appropriate slot in rassler.conf, and tweak the rest
+of the options as appropriate while you're there. It will also need read/write
+access to the directory it lives in so it can write its channel info cache. (The
+cache isn't strictly necessary, but just further cuts down the number of API
+calls needed. Feel free to toss it whenever.)
+
+Things to be improved:
+- There's some simple error checking, but it hasn't been thoroughly tested.
+  Assuming the API behaves, you shouldn't need to worry about it much.
+- It will return a 404 if something goes wrong, but doesn't serve an actual
+  error page. This isn't too big of an issue since it will be primarily consumed
+  by RSS clients, but would be nice to have.
+- The cache is permanent, and there's no way to disable it. Playlist IDs are
+  unique and should never change, so the only issue this causes is that the
+  channel name/avatar/description will never update. As mentioned before, you
+  can safely remove the cache at any time to reset it.
+
