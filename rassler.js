@@ -47,15 +47,17 @@ youtube = (function() {
                     }
                     
                     var item = userData.items[0];
-                    cache[username] = {
-                        id: item.contentDetails.relatedPlaylists.uploads,
-                        metadata: {
-                            title: item.snippet.title,
-                            description: item.snippet.description,
-                            timestamp: item.snippet.publishedAt,
-                            thumbnailURL: item.snippet.thumbnails.high.url
-                        }
-                    };
+                    var snippet = item.snippet;
+
+                    cache[username] = { id: item.contentDetails && item.contentDetails.relatedPlaylists && item.contentDetails.relatedPlaylists.uploads };
+                    if (snippet) {
+                        cache[username].metadata = {
+                            title: snippet.title,
+                            description: snippet.description,
+                            timestamp: snippet.publishedAt,
+                            thumbnailURL: snippet && snippet.thumbnails && snippet.thumbnails.high && snippet.thumbnails.high.url
+                        };
+                    }
                     fs.writeFile("./channelInfoCache.json", JSON.stringify(cache, null, 4));
 
                     callback(cache[username]);
@@ -78,7 +80,7 @@ youtube = (function() {
                         return;
                     }
 
-                    callback(playlistData.items.map(function(item) { return item.contentDetails.videoId; }));
+                    callback(playlistData.items.map(function(item) { return item.contentDetails && item.contentDetails.videoId; }));
                 });
             }).on('error', function(error) {
                 log("Failed to retrieve playlist " + playlistID, 1);
@@ -99,12 +101,18 @@ youtube = (function() {
                     }
 
                     callback(videoData.items.map(function(item) { 
+                        var snippet = item.snippet;
+                        if (!snippet) {
+                            log("Empty snippet for " + item.id + ", ignoring", 1);
+                            return null;
+                        }
+
                         return {
                             id: item.id,
-                            title: item.snippet.localized.title,
-                            timestamp: item.snippet.publishedAt,
-                            description: item.snippet.localized.description,
-                            thumbnailURL: item.snippet.thumbnails.maxres.url,
+                            title: snippet.localized.title,
+                            timestamp: snippet.publishedAt,
+                            description: snippet.localized && snippet.localized.description,
+                            thumbnailURL: snippet.thumbnails && snippet.thumbnails.maxres && snippet.thumbnails.maxres.url
                         };
                     }));
                 });
@@ -194,6 +202,7 @@ server.listen(config["port"], config["host"], null, function() {
     }
     catch (err) {
         log("Failed. Cowardly refusing to run as root.", 0);
+        log(err);
         process.exit(1);
     }
 });
